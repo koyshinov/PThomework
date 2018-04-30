@@ -35,100 +35,71 @@ def test_passwd_file():
 
 
 def test_except_transport_error_1():
-    transport = get_transport("SSH", "localhost", 23022, "root", "pwd")
-    try:
-        transport.exec()
-    except TransportError:
+    """
+    with pytest.raises(ZeroDivisionError, message="Expecting ZeroDivisionError"):
         pass
-    else:
-        raise NameError("Exception not found")
+    """
+    transport = get_transport("SSH", "localhost", 23022, "root", "pwd")
+
+    with pytest.raises(TransportError, message="Expecting TransportError"):
+        transport.exec()
 
     del(transport)
 
 
 def test_except_transport_error_2():
     transport = get_transport("SSH", "localhost", 23022, "root", "pwd")
-    try:
+
+    with pytest.raises(TransportError, message="Expecting TransportError"):
         transport.exec("")
-    except TransportError:
-        pass
-    else:
-        raise NameError("Exception not found")
 
     del(transport)
 
 
 def test_except_transport_error_3():
     transport = get_transport("SSH", "localhost", 23022, "root", "pwd")
-    try:
+
+    with pytest.raises(TransportError, message="Expecting TransportError"):
         transport.get_file()
-    except TransportError:
-        pass
-    else:
-        raise NameError("Exception not found")
 
     del(transport)
 
 
 def test_except_transport_error_4():
     transport = get_transport("SSH", "localhost", 23022, "root", "pwd")
-    try:
+
+    with pytest.raises(TransportError, message="Expecting TransportError"):
         transport.get_file("")
-    except TransportError:
-        pass
-    else:
-        raise NameError("Exception not found")
 
     del(transport)
 
 
 def test_except_unknown_transport():
-    try:
+    with pytest.raises(UnknownTransport, message="Expecting UnknownTransport"):
         transport = get_transport("SFTP", "localhost", 23022, "root", "pwd")
         del(transport)
-    except UnknownTransport:
-        pass
-    else:
-        raise NameError("Exception not found")
 
 
 def test_wrong_data_port():
-    try:
+    with pytest.raises(TransportConnetionError, message="Expecting TransportConnetionError"):
         transport = get_transport("SSH", "localhost", 23023, "root", "pwd")
         del(transport)
-    except TransportConnetionError:
-        pass
-    else:
-        raise NameError("Exception not found")
 
 
 def test_wrong_data_login_passw():
-    try:
+    with pytest.raises(TransportConnetionError, message="Expecting TransportConnetionError"):
         transport = get_transport("SSH", "localhost", 23022, "roo", "pwd")
-        del(transport)
-    except TransportConnetionError:
-        pass
-    else:
-        raise NameError("Exception not found")
+        del (transport)
 
-    try:
+    with pytest.raises(TransportConnetionError, message="Expecting TransportConnetionError"):
         transport = get_transport("SSH", "localhost", 23022, "root", "pwd1")
-        del(transport)
-    except TransportConnetionError:
-        pass
-    else:
-        raise NameError("Exception not found")
-
+        del (transport)
 
 
 def test_wrong_data_host():
-    try:
+    with pytest.raises(TransportConnetionError, message="Expecting TransportConnetionError"):
         transport = get_transport("SSH", "8.8.8.8", 23022, "root", "pwd")
         del(transport)
-    except TransportConnetionError:
-        pass
-    else:
-        raise NameError("Exception not found")
 
 
 def test_rm_cont():
