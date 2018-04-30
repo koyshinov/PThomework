@@ -2,6 +2,8 @@ import paramiko
 import socket
 import json
 
+from config import SSH_CONFIG_FILE
+
 
 class TransportError(Exception):
     pass
@@ -22,17 +24,17 @@ class UnknownTransport(Exception):
 class SSHTransport:
     def __init__(self, host, port, login, password):
         if not all([host, port, login, password]):
-            with open('env.json', 'r') as f:
+            with open(SSH_CONFIG_FILE, 'r') as f:
                 env = json.load(f)
             if not host:
                 host = env.get("host")
 
             transports_ = env.get("transports")
             if not transports_:
-                raise TransportConnetionError()
+                raise TransportConnetionError("Incorrect format of %s (param transports not found)" % SSH_CONFIG_FILE)
             ssh_ = transports_.get("SSH")
             if not ssh_:
-                raise TransportConnetionError
+                raise TransportConnetionError("Incorrect format of %s (param SSH not found)" % SSH_CONFIG_FILE)
 
             if not port:
                 port = ssh_.get("port")
@@ -42,7 +44,7 @@ class SSHTransport:
                 password = ssh_.get("password")
 
             if not all([host, port, login, password]):
-                raise TransportConnetionError
+                raise TransportConnetionError("Some of params (host, port, login, password) not found")
 
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -50,15 +52,13 @@ class SSHTransport:
             self.client.connect(hostname=host, username=login, password=password, port=port, timeout=5)
         except (paramiko.ssh_exception.NoValidConnectionsError, paramiko.ssh_exception.AuthenticationException,
                 paramiko.ssh_exception.SSHException, socket.timeout):
-            raise TransportConnetionError()
+            raise TransportConnetionError("Error of ssh connection")
 
     def exec(self, command=None):
         if not command:
-            raise TransportError()
-        try:
-            stdin, stdout, stderr = self.client.exec_command(command)
-        except paramiko.ssh_exception.SSHException:
-            raise TransportError()
+            raise TransportError("Command not found")
+
+        stdin, stdout, stderr = self.client.exec_command(command)
 
         error = stderr.read()
 
@@ -87,5 +87,5 @@ transport_classes = {
 def get_transport(transport_name, host=None, port=None, login=None, password=None):
     transport = transport_classes.get(transport_name)
     if not transport:
-        raise UnknownTransport()
+        raise UnknownTransport("Transport name %s not found" % transport_name)
     return transport(host, port, login, password)

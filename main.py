@@ -2,10 +2,11 @@ import json
 import os
 import importlib
 
+from config import DB_FILE, CONTROLS_FILE
 from peewee_models import db, Control, Scandata
 
 
-def imp_controls_from_json(json_filepath='controls.json'):
+def imp_controls_from_json(json_filepath=CONTROLS_FILE):
     try:
         with open(json_filepath, 'r') as f:
             contrs = json.load(f)
@@ -19,7 +20,7 @@ def imp_controls_from_json(json_filepath='controls.json'):
             if filename not in control_fnames:
                 Control.create(filename=filename, description=description)
     except (ValueError, FileNotFoundError):
-        print("Problems with controls.json! File is not exist, or format is not correct")
+        print("Problems with %s! File is not exist, or format is not correct" % CONTROLS_FILE)
 
 
 def add_control(filename, status):
@@ -33,8 +34,9 @@ def add_control(filename, status):
 
 
 def run():
-    if os.path.isfile("sqlite.db"):
-        os.remove("sqlite.db")
+    if os.path.isfile(DB_FILE):
+        os.remove(DB_FILE)
+
 
     db.connect()
     db.create_tables([Control, Scandata])

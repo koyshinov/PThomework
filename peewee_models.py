@@ -1,7 +1,8 @@
-from peewee import *
+from peewee import SqliteDatabase, Model, CharField, ForeignKeyField, SmallIntegerField
+from config import DB_FILE
 
 
-db = SqliteDatabase('sqlite.db')
+db = SqliteDatabase(DB_FILE)
 
 
 class Control(Model):

@@ -10,7 +10,7 @@ def execute_before_any_test():
     global container
 
     client = docker.from_env()
-    images = client.images.build(path="test/sshd", dockerfile='Dockerfile')
+    images = client.images.build(path="tests/sshd", dockerfile='Dockerfile')
     container = client.containers.run(image=images[0], detach=True, ports={"22/tcp": 23022})
     client.containers.prune()
     time.sleep(5)
