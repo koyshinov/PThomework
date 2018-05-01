@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет</title>
+</head>
+<body>
+
+<article class="A4">
+    <div class="main-page-wrapper">
+        <h1 class="main-title">
+            Отчет
+        </h1>
+    </div>
+</article>
+
+<article class="A4">
+    <h2 class="main-title">
+        Информация о системе
+    </h2>
+
+    <p> host: {{ system_info.host }} </p>
+    <p> количество тестов с неудачным подключением: {{ count_of_bad_connection }} </p>
+
+    {% if system_info.transports.SSH %}
+    <h3> SSH </h3>
+    <p> логин: {{ system_info.transports.SSH.login }} </p>
+    <p> порт: {{ system_info.transports.SSH.port }} </p>
+    {% endif %}
+
+    <h2 class="main-title">
+        Информация о сканировании
+    </h2>
+    <p> количество проверок: {{ count_contrs }} </p>
+    <p> количество успешных проверок: {{ count_compliant_contrs }} ({{ percent_of_cc }}%)</p>
+    <p> дата начала проверки: {{ scan_info.time_of_start_scanning }} </p>
+    <p> дата конца проверки: {{ scan_info.time_of_finish_scanning }} </p>
+    <p> время проверки: {{ scan_info.total_sec_scanning }} сек. </p>
+</article>
+
+
+<article class="A4">
+    <h2>
+        Результаты проверок
+    </h2>
+
+    {% for control in controls_info %}
+
+    <article>
+        <h3>{{ control.title }}</h3>
+
+        <h4> название: {{ control.filename }}</h4>
+
+        <p></p>
+        <p> требование: {{ control.requirements }} </p>
+        <p> время проверки: {{ control.dur_secs }} сек. </p>
+
+        {% if control.status > 1 %}
+        <p> status: <span class="not-compliant"> {{ control.print_status }} </span></p>
+        {% else %}
+        <p> status: <span class="compliant"> {{ control.print_status }} </span></p>
+        {% endif %}
+
+        <p>
+            {{ control.description }}
+        </p>
+    </article>
+
+    {% endfor %}
+
+</article>
+
+</body>
+</html>

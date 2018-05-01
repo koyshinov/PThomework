@@ -1,10 +1,5 @@
+from config import STATUS_NOT_APPLICABLE, STATUS_COMPLIANT, STATUS_NOT_COMPLIANT, STATUS_ERROR
 from transports import get_transport, TransportConnetionError
-
-
-STATUS_COMPLIANT = 1  # совместимо
-STATUS_NOT_COMPLIANT = 2  # несовместимо
-STATUS_NOT_APPLICABLE = 3  # неприменимо (отствует транспорт)
-STATUS_ERROR = 4  # ошибка обработаная скриптом
 
 
 def main():

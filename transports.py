@@ -4,7 +4,7 @@ import json
 
 from contextlib import contextmanager
 
-from config import SSH_CONFIG_FILE
+from config import TRANSPORTS_CONFIG_FILE
 
 
 class TransportError(Exception):
@@ -24,19 +24,19 @@ class UnknownTransport(Exception):
 
 
 class SSHTransport:
-    def __init__(self, host, port, login, password):
+    def __init__(self, host=None, port=None, login=None, password=None):
         if not all([host, port, login, password]):
-            with open(SSH_CONFIG_FILE, 'r') as f:
+            with open(TRANSPORTS_CONFIG_FILE, 'r') as f:
                 env = json.load(f)
             if not host:
                 host = env.get("host")
 
             transports_ = env.get("transports")
             if not transports_:
-                raise TransportConnetionError("Incorrect format of %s (param transports not found)" % SSH_CONFIG_FILE)
+                raise TransportConnetionError("Incorrect format of %s (param transports not found)" % TRANSPORTS_CONFIG_FILE)
             ssh_ = transports_.get("SSH")
             if not ssh_:
-                raise TransportConnetionError("Incorrect format of %s (param SSH not found)" % SSH_CONFIG_FILE)
+                raise TransportConnetionError("Incorrect format of %s (param SSH not found)" % TRANSPORTS_CONFIG_FILE)
 
             if not port:
                 port = ssh_.get("port")

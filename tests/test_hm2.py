@@ -5,7 +5,7 @@ import time
 import os
 import json
 
-from config import DB_FILE, SSH_CONFIG_FILE, CONTROLS_FILE
+from config import DB_FILE, TRANSPORTS_CONFIG_FILE, CONTROLS_FILE
 from transports import get_transport
 from peewee_models import Scandata
 from main import run
@@ -21,13 +21,13 @@ def execute_before_any_test():
     client.containers.prune()
     time.sleep(5)
 
-    if os.path.isfile(SSH_CONFIG_FILE):
-        os.rename(SSH_CONFIG_FILE, "%s.dump" % SSH_CONFIG_FILE)
+    if os.path.isfile(TRANSPORTS_CONFIG_FILE):
+        os.rename(TRANSPORTS_CONFIG_FILE, "%s.dump" % TRANSPORTS_CONFIG_FILE)
 
     if os.path.isfile(DB_FILE):
         os.rename(DB_FILE, "%s.dump" % DB_FILE)
 
-    with open(SSH_CONFIG_FILE, 'w') as f:
+    with open(TRANSPORTS_CONFIG_FILE, 'w') as f:
         data = {"host": "localhost", "transports": {"SSH": {"password": "pwd", "login": "root", "port": 23022}}}
         json.dump(data, f)
 
@@ -62,14 +62,14 @@ def test_first_script_while_docker_stopped():
 
 
 def test_db_json_back_and_check():
-    os.remove(SSH_CONFIG_FILE)
-    if os.path.isfile("%s.dump" % SSH_CONFIG_FILE):
-        os.rename("%s.dump" % SSH_CONFIG_FILE, SSH_CONFIG_FILE)
+    os.remove(TRANSPORTS_CONFIG_FILE)
+    if os.path.isfile("%s.dump" % TRANSPORTS_CONFIG_FILE):
+        os.rename("%s.dump" % TRANSPORTS_CONFIG_FILE, TRANSPORTS_CONFIG_FILE)
     os.remove(DB_FILE)
     if os.path.isfile("%s.dump" % DB_FILE):
         os.rename("%s.dump" % DB_FILE, DB_FILE)
 
-    with open(SSH_CONFIG_FILE, 'r') as f:
+    with open(TRANSPORTS_CONFIG_FILE, 'r') as f:
         env = json.load(f)
 
     assert env.get("host")
@@ -80,12 +80,12 @@ def test_db_json_back_and_check():
     assert ssh_.get("port")
     assert ssh_.get("login")
     assert ssh_.get("password")
-
-
-def test_controls_json():
-    if os.path.isfile(CONTROLS_FILE):
-        with open(CONTROLS_FILE, 'r') as f:
-            contrs = json.load(f)
-
-        checks = list(map(lambda x: len(x) == 2, contrs))
-        assert all(checks)
+#
+#
+# def test_controls_json():
+#     if os.path.isfile(CONTROLS_FILE):
+#         with open(CONTROLS_FILE, 'r') as f:
+#             contrs = json.load(f)
+#
+#         checks = list(map(lambda x: len(x) == 2, contrs))
+#         assert all(checks)
