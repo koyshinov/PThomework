@@ -33,16 +33,16 @@ def execute_before_any_test():
 
 
 def test_connect_without_any_data():
-    transport = get_transport("SSH")
-    del(transport)
+    with get_transport("SSH"):
+        pass
 
 
 def test_first_script_while_docker_running():
     scriptpack = importlib.import_module("scripts.000_test_file_exists")
-    transport = get_transport("SSH")
-    assert scriptpack.main() == 2
-    transport.exec("touch testfile")
-    assert scriptpack.main() == 1
+    with get_transport("SSH") as transport:
+        assert scriptpack.main() == 2
+        transport.exec("touch testfile")
+        assert scriptpack.main() == 1
 
 
 def test_main_run_function_with_db():
@@ -72,14 +72,14 @@ def test_db_json_back_and_check():
     with open(SSH_CONFIG_FILE, 'r') as f:
         env = json.load(f)
 
-    host = env["host"]
+    assert env.get("host")
 
     transports_ = env["transports"]
     ssh_ = transports_["SSH"]
 
-    port = ssh_["port"]
-    login = ssh_["login"]
-    password = ssh_["password"]
+    assert ssh_.get("port")
+    assert ssh_.get("login")
+    assert ssh_.get("password")
 
 
 def test_controls_json():

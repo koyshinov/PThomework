@@ -37,7 +37,6 @@ def run():
     if os.path.isfile(DB_FILE):
         os.remove(DB_FILE)
 
-
     db.connect()
     db.create_tables([Control, Scandata])
 
@@ -45,8 +44,8 @@ def run():
 
     for file in os.listdir("scripts"):
         if file.endswith(".py"):
+            scriptname = file[:-3]
             try:
-                scriptname = file[:-3]
                 scriptpack = importlib.import_module("scripts.%s" % scriptname)
                 status = scriptpack.main()
             except Exception as e:

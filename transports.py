@@ -2,6 +2,8 @@ import paramiko
 import socket
 import json
 
+from contextlib import contextmanager
+
 from config import SSH_CONFIG_FILE
 
 
@@ -74,7 +76,7 @@ class SSHTransport:
         stdout = sftp_client.file(path, mode="r").read()
         return stdout.decode("utf-8")
 
-    def __del__(self):
+    def close_connect(self):
         if hasattr(self, "client"):
             self.client.close()
 
@@ -84,8 +86,12 @@ transport_classes = {
 }
 
 
+@contextmanager
 def get_transport(transport_name, host=None, port=None, login=None, password=None):
     transport = transport_classes.get(transport_name)
+
     if not transport:
         raise UnknownTransport("Transport name %s not found" % transport_name)
-    return transport(host, port, login, password)
+    yield transport(host, port, login, password)
+
+    del(transport)

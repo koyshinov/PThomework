@@ -12,11 +12,11 @@ def main():
     filename = "testfile"
 
     try:
-        transport = get_transport("SSH")
+        with get_transport("SSH") as transport:
+            result = transport.exec(cmnd % filename)
+
     except TransportConnetionError:
         return STATUS_NOT_APPLICABLE
-
-    result = transport.exec(cmnd % filename)
 
     if "Exist" in result:
         return STATUS_COMPLIANT
@@ -24,4 +24,3 @@ def main():
         return STATUS_NOT_COMPLIANT
     else:
         return STATUS_ERROR
-

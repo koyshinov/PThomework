@@ -65,7 +65,14 @@ python main.py
 ```
 from transports import TransportError, UnknownTransport, TransportConnetionError
 ```
-- Чтобы подключтиться по ssh, нужно использовать функцию `get_transport`. Те данные, что не переданы входными 
-  параметрами будут браться из файла `env.json` (Параметр `transport_name` остается обязательным)
+- Чтобы подключтиться по ssh, нужно использовать контекстный менеджер `get_transport`. Те данные, что не переданы 
+  входными параметрами будут браться из файла `env.json` (Параметр `transport_name` остается обязательным). 
+  Пример использования:
+```
+with get_transport("SSH", "localhost", 23022, "root", "pwd") as transport:
+    passwd_file1 = transport.get_file("/etc/passwd")
+    passwd_file2 = transport.exec("cat /etc/passwd")
+``` 
+  
 - Пример скрипта `000_test_file_exists.py` находится в папке `scripts`
   
