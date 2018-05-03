@@ -11,9 +11,11 @@ def remove_test_report(report_path):
         os.rmdir(dirname)
 
 
-def test_main_run_function_without_report():
+def test_main_run_function():
     report_path = run()
     scans_counts = Scandata.select().count()
+
+    assert os.path.isfile(report_path)
 
     remove_test_report(report_path)
 

@@ -114,14 +114,17 @@ class MySQLTransport:
         except (pymysql.err.OperationalError, ):
             raise TransportConnetionError("Error of mysql connection")
 
-    def sqlexec(self, sql, params=None):
+    def sqlexec(self, sql=None, params=None):
+        if not sql:
+            raise TransportError("SQL command not found")
+
         with self.connection.cursor() as cursor:
             try:
                 if params:
                     cursor.execute(sql, params)
                 else:
                     cursor.execute(sql)
-            except (pymysql.err.InternalError) as e:
+            except (pymysql.err.InternalError, pymysql.err.ProgrammingError) as e:
                 raise TransportCommandError(e)
 
             self.connection.commit()

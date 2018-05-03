@@ -14,7 +14,7 @@ virtualenv -p python3 venv
 
 Активировать виртуальное окружение.
 
-Установить зависимости
+Установить зависимости:
 ```commandline
 pip install -r requirements.txt
 ```
