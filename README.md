@@ -1,78 +1,70 @@
-Домашнее задание N2
-===================
-По стажировке в pt
+# Домашнее задание N3 по стажировке в PT
 
 Условия заданий:
 - https://github.com/PTinternship/ptpy-p1
 - https://github.com/PTinternship/ptpy-p2
+- https://github.com/PTinternship/ptpy-p3
 
-Установка
----------
+## Установка
 
-Установить докер
+Установить виртуальное окружение:
+```commandline
+virtualenv -p python3 venv
+```
 
-Создать виртуальное окружение
+Активировать виртуальное окружение.
 
 Установить зависимости
-```
+```commandline
 pip install -r requirements.txt
 ```
 
-Тестирование
-------------
-Перед использованием нужно убедиться в наличии файлов (если нет, создать) `controls.json` и `env.json` и убедиться, 
-что порт 23022 не используется каким-либо приложением.
+## Тестирование
 
-Формат файла `controls.json`:
-```
-[
-  ["000_test_file_exists", "File named 'testfile' is present in the root folder on target system."],
-  ["456","some other control"]
-]
-```
-
-Формат файла `env.json`:
-```
-{
-  "host": "localhost",
-  "transports": {
-    "SSH": {
-      "password": "pwd",
-      "login": "root",
-      "port": 22022
-    }
-  }
-}
-```
-
-Чтобы тесты прошли успешно, нужно оставить скрипт `000_test_file_exists.py` в папке `script` и не изменять его.
-
-Запуск тестов производится из директории проекта командой:
-```
-python -m pytest tests
-```
+[Документация по тестированию](tests/README.md)
 
 Пример использования
 --------------------
-```
+Консоль:
+```commandline
 python main.py
+```
+
+Python:
+```python
+from main import run
+report_path = run()
 ```
 
 Требования к скриптам
 ---------------------
-- Скрипт должен находиться в папке `scripts`, быть написан на ЯП Python3 и иметь функцию run() (которая будет запускаться движком)
+- Скрипт должен находиться в папке scripts, быть написан на ЯП Python3 и иметь функцию run() (которая будет запускаться движком)
 - Чтобы отлавливать ошибки транспорта, их нужно импортировать:
-```
+```python
 from transports import TransportError, UnknownTransport, TransportConnetionError
 ```
-- Чтобы подключтиться по ssh, нужно использовать контекстный менеджер `get_transport`. Те данные, что не переданы 
-  входными параметрами будут браться из файла `env.json` (Параметр `transport_name` остается обязательным). 
+- Чтобы подключтиться по ssh, нужно использовать контекстный менеджер get_transport. Те данные, что не переданы 
+  входными параметрами будут браться из файла env.json (Параметр transport_name остается обязательным). 
   Пример использования:
-```
-with get_transport("SSH", "localhost", 23022, "root", "pwd") as transport:
+```python
+from transports import get_transport
+
+with get_transport("SSH") as transport:
     passwd_file1 = transport.get_file("/etc/passwd")
     passwd_file2 = transport.exec("cat /etc/passwd")
+    print(passwd_file1, passwd_file2)
 ``` 
+
+- Аналогично для подключения по mysql:
+```python
+from transports import get_transport
+
+SQL_SELECT = "SELECT `id`, `password` FROM `users` WHERE `email`=%s;"
+
+with get_transport("MySQL") as transport:
+    data = transport.sqlexec(SQL_SELECT, ('webmaster@python.org',))
+    print(data)
+```
   
-- Пример скрипта `000_test_file_exists.py` находится в папке `scripts`
+- Пример скрипта 000_test_file_exists.py находится в папке scripts.
   

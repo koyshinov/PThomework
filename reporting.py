@@ -4,7 +4,7 @@ import jinja2
 import weasyprint
 
 from config import TRANSPORTS_CONFIG_FILE, STATUS_COMPLIANT, STATUS_NOT_APPLICABLE
-from peewee_models import Scandata
+from models import Scandata
 
 
 def print_report(scan_info):
@@ -52,7 +52,8 @@ def print_report(scan_info):
     if not os.path.isdir("reports/{}".format(system_info.get("host"))):
         os.makedirs("reports/{}".format(system_info.get("host")))
 
-    whtml.write_pdf('reports/{}/report at {}.pdf'.format(
-        system_info.get("host"),
-        scan_info.get("time_of_start_scanning")
-    ), stylesheets=[wcss])
+    report_path = 'reports/{}/report at {}.pdf'.format(system_info.get("host"), scan_info.get("time_of_start_scanning"))
+
+    whtml.write_pdf(report_path, stylesheets=[wcss])
+
+    return os.path.abspath(report_path)

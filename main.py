@@ -4,7 +4,7 @@ import os
 import importlib
 
 from config import DB_FILE, CONTROLS_FILE, STATUS_EXCEPTION
-from peewee_models import db, Control, Scandata
+from models import db, Control, Scandata
 from reporting import print_report
 
 
@@ -76,9 +76,11 @@ def run():
         "total_sec_scanning": duration
     }
 
-    print_report(scan_info)
+    report_path = print_report(scan_info)
 
     db.close()
+
+    return report_path
 
 
 if __name__ == "__main__":
