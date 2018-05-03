@@ -50,3 +50,15 @@ def test_invalid_sql2():
     with pytest.raises(TransportCommandError, message="Expecting TransportCommandError"):
         with get_transport("MySQL", "localhost", 43306, "root", "pwd123", "sadb") as transport:
             transport.sqlexec(SQL_INSERT)
+
+
+def test_invalid_sql3():
+    with pytest.raises(TransportCommandError, message="Expecting TransportCommandError"):
+        with get_transport("MySQL", "localhost", 43306, "root", "pwd123", "sadb") as transport:
+            transport.sqlexec("SELECT %s", ("1", "blabla"))
+
+
+def test_invalid_sql4():
+    with pytest.raises(TransportCommandError, message="Expecting TransportCommandError"):
+        with get_transport("MySQL", "localhost", 43306, "root", "pwd123", "sadb") as transport:
+            transport.sqlexec("SELECT %s")

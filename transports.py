@@ -124,7 +124,7 @@ class MySQLTransport:
                     cursor.execute(sql, params)
                 else:
                     cursor.execute(sql)
-            except (pymysql.err.InternalError, pymysql.err.ProgrammingError) as e:
+            except (pymysql.err.InternalError, pymysql.err.ProgrammingError, TypeError) as e:
                 raise TransportCommandError(e)
 
             self.connection.commit()
