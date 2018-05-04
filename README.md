@@ -41,7 +41,7 @@ report_path = run()
 - Скрипт должен находиться в папке scripts, быть написан на ЯП Python3 и иметь функцию run() (которая будет запускаться движком)
 - Чтобы отлавливать ошибки транспорта, их нужно импортировать:
 ```python
-from transports import TransportError, UnknownTransport, TransportConnetionError
+from transports import TransportError, UnknownTransport, TransportConnetionError, TransportCommandError
 ```
 - Чтобы подключтиться по ssh, нужно использовать контекстный менеджер get_transport. Те данные, что не переданы 
   входными параметрами будут браться из файла env.json (Параметр transport_name остается обязательным). 
