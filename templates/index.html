@@ -9,12 +9,9 @@
 <article class="A4">
     <div class="main-page-wrapper">
         <h1 class="main-title">
-            Отчет
+            <center>Отчет</center>
         </h1>
     </div>
-</article>
-
-<article class="A4">
     <h2 class="main-title">
         Информация о системе
     </h2>
@@ -26,6 +23,13 @@
     <h3> SSH </h3>
     <p> логин: {{ system_info.transports.SSH.login }} </p>
     <p> порт: {{ system_info.transports.SSH.port }} </p>
+    {% endif %}
+
+    {% if system_info.transports.MySQL %}
+    <h3> MySQL </h3>
+    <p> логин: {{ system_info.transports.MySQL.login }} </p>
+    <p> база данных: {{ system_info.transports.MySQL.db }} </p>
+    <p> порт: {{ system_info.transports.MySQL.port }} </p>
     {% endif %}
 
     <h2 class="main-title">

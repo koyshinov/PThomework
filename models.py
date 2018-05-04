@@ -8,7 +8,7 @@ db = peewee.SqliteDatabase(DB_FILE)
 
 
 class Control(peewee.Model):
-    uid = peewee.CharField()
+    uid = peewee.CharField(null=True)
     filename = peewee.CharField(primary_key=True)
     title = peewee.CharField(null=True)
     requirements = peewee.CharField(null=True)
