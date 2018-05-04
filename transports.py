@@ -128,7 +128,7 @@ class MySQLTransport:
                 raise TransportCommandError(e)
 
             self.connection.commit()
-            return cursor.fetchone()
+            return cursor.fetchall()
 
     def __del__(self):
         if hasattr(self, "connection"):

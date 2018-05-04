@@ -18,4 +18,5 @@ def main():
     elif result == "":
         return STATUS_NOT_COMPLIANT
     else:
+        print(result)
         return STATUS_ERROR

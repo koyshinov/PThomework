@@ -23,13 +23,20 @@ docker run --name some-mariadb -p 127.0.0.1:43306:3306 -e MYSQL_ROOT_PASSWORD=pw
 controls.json:
 ```json
 {
-  "0001": {
-    "filename": "000_test_file_exists",
+  "001": {
+    "filename": "001_test_file_exists",
     "title": "Проверка существования тестового файла",
     "requirements": "Существование файла",
     "description": "Данный тест проверяет наличие файла testfile в домашней директории пользователя root. Нужен для тестирования системы"
+  },
+  "002": {
+    "filename": "002_test_data_in_table_exist",
+    "title": "Проверка существования записей в таблице testtable",
+    "requirements": "Существование записей в testtable",
+    "description": "Данный тест проверяет наличие таблицы testtable и записей в таблице testtable"
   }
 }
+
 ```
 
 env.json:

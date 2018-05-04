@@ -34,7 +34,7 @@ def test_select_data():
     with get_transport("MySQL") as transport:
         data = transport.sqlexec(SQL_SELECT, ('webmaster@python.org',))
 
-        assert data == {'password': 'very-secret', 'id': 1}
+        assert data == [{'password': 'very-secret', 'id': 1}]
 
 
 def test_delete_data():

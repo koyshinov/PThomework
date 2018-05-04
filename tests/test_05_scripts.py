@@ -7,8 +7,29 @@ from transports import get_transport
 
 
 def test_first_script_while_ssh_conected():
-    scriptpack = importlib.import_module("scripts.000_test_file_exists")
+    scriptpack = importlib.import_module("scripts.001_test_file_exists")
     with get_transport("SSH") as transport:
+        result = scriptpack.main()
+
+        if result == 2:
+            transport.exec("touch testfile")
+            result = scriptpack.main()
+
+            transport.exec("rm testfile")
+
+            assert result == 1
+
+        elif result == 1:
+            result = scriptpack.main()
+
+            transport.exec("rm testfile")
+
+            assert result == 1
+            assert scriptpack.main() == 2
+
+        else:
+            raise NameError("Uknown result")
+
         assert scriptpack.main() == 2
 
         transport.exec("touch testfile")
@@ -27,7 +48,7 @@ def test_first_script_while_ssh_without_connection():
         data = {"host": "localhost", "transports": {"SSH": {"password": "pwd", "login": "root123", "port": 22023}}}
         json.dump(data, f)
 
-    result = importlib.import_module("scripts.000_test_file_exists").main()
+    result = importlib.import_module("scripts.001_test_file_exists").main()
 
     if os.path.isfile("%s.dump" % TRANSPORTS_CONFIG_FILE):
         os.rename("%s.dump" % TRANSPORTS_CONFIG_FILE, TRANSPORTS_CONFIG_FILE)
