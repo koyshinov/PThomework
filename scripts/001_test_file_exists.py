@@ -1,10 +1,5 @@
+from config import STATUS_NOT_APPLICABLE, STATUS_COMPLIANT, STATUS_NOT_COMPLIANT, STATUS_ERROR
 from transports import get_transport, TransportConnetionError
-
-
-STATUS_COMPLIANT = 1  # совместимо
-STATUS_NOT_COMPLIANT = 2  # несовместимо
-STATUS_NOT_APPLICABLE = 3  # неприменимо (отствует транспорт)
-STATUS_ERROR = 4  # ошибка обработаная скриптом
 
 
 def main():
@@ -12,11 +7,11 @@ def main():
     filename = "testfile"
 
     try:
-        transport = get_transport("SSH")
+        with get_transport("SSH") as transport:
+            result = transport.exec(cmnd % filename)
+
     except TransportConnetionError:
         return STATUS_NOT_APPLICABLE
-
-    result = transport.exec(cmnd % filename)
 
     if "Exist" in result:
         return STATUS_COMPLIANT
@@ -24,4 +19,3 @@ def main():
         return STATUS_NOT_COMPLIANT
     else:
         return STATUS_ERROR
-
